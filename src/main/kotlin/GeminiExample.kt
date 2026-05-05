@@ -22,6 +22,22 @@ class CalculatorTools {
     fun multiply(a: Double, b: Double): Double = a * b
 }
 
+class MoviesTools {
+    @Tool("Find all movies by a specific director")
+    fun lookUpMovieByDirector(director: String): String {
+        """
+            Find all movies by a specific director.
+            
+            Args: 
+                director: the name of the director to search for
+                
+            Returns:
+                A formatted string listing all movies by that director, or a message if none are found.            
+        """.trimIndent()
+
+        return "Movies by $director are: ..."
+    }
+}
 fun main() {
     // 2. Obtain your API key from environment variables
     val apiKey = System.getenv("GEMINI_API_KEY")
@@ -46,7 +62,7 @@ fun main() {
     val assistant = AiServices.builder(GeminiAssistant::class.java)
         .chatModel(model)
         .chatMemory(memory)
-        .tools(CalculatorTools())
+        .tools(CalculatorTools(), MoviesTools())
         .build()
 
     println("=== Gemini AI Agent POC ===")
@@ -54,7 +70,7 @@ fun main() {
     println("---------------------")
     
     // 5. Interact with the agent
-    val userMessage = "Hello Gemini, can you explain what LangChain4j is in one sentence?"
+    val userMessage = "Which movies are directed by Christofer Nolan?"//"Hello Gemini, can you explain what LangChain4j is in one sentence?"
     println("User: $userMessage")
     
     try {
