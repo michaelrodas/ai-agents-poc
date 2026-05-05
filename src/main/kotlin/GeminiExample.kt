@@ -1,5 +1,6 @@
 package org.example
 
+import dev.langchain4j.agent.tool.Tool
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel
 import dev.langchain4j.service.AiServices
@@ -9,6 +10,16 @@ import dev.langchain4j.service.SystemMessage
 interface GeminiAssistant {
     @SystemMessage("You are a polite, helpful and concise AI assistant powered by Gemini.")
     fun chat(message: String): String
+}
+
+// Define tools the agent can call
+class CalculatorTools {
+
+    @Tool("Adds two numbers together")
+    fun add(a: Double, b: Double): Double = a + b
+
+    @Tool("Multiplies two numbers together")
+    fun multiply(a: Double, b: Double): Double = a * b
 }
 
 fun main() {
@@ -22,15 +33,20 @@ fun main() {
     }
 
     // 3. Initialize the Gemini ChatModel
+    // Use gemini-1.5-flash as the model name
     val model = GoogleAiGeminiChatModel.builder()
         .apiKey(apiKey)
-        .modelName("gemini-1.5-flash") // You can also use "gemini-1.5-pro"
+        .modelName("gemini-2.5-flash")
+        .temperature(0.7)
         .build()
+
+    val memory = MessageWindowChatMemory.withMaxMessages(10)
 
     // 4. Create the agent using AiServices
     val assistant = AiServices.builder(GeminiAssistant::class.java)
-        .chatLanguageModel(model)
-        .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
+        .chatModel(model)
+        .chatMemory(memory)
+        .tools(CalculatorTools())
         .build()
 
     println("=== Gemini AI Agent POC ===")
@@ -47,4 +63,8 @@ fun main() {
     } catch (e: Exception) {
         println("Error connecting to Gemini: ${e.message}")
     }
+
+//    println(assistant.chat("What is 42 multiplied by 7?"))
+//    println(assistant.chat("Now add 100 to that result."))
+//    println(assistant.chat("What were the two calculations you just did?"))
 }
