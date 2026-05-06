@@ -23,6 +23,46 @@ class CalculatorTools {
 }
 
 class MoviesTools {
+    data class Movie(
+        val title: String,
+        val director: String,
+        val year: Int,
+        val rating: Double
+    )
+
+    val movieDatabase: Map<String, Movie> = mapOf(
+        "inception" to Movie(
+            title = "Inception",
+            director = "Christopher Nolan",
+            year = 2010,
+            rating = 8.8
+        ),
+        "interstellar" to Movie(
+            title = "Interstellar",
+            director = "Christopher Nolan",
+            year = 2014,
+            rating = 8.7
+        ),
+        "dark_knight" to Movie(
+            title = "The Dark Knight",
+            director = "Christopher Nolan",
+            year = 2008,
+            rating = 9.0
+        ),
+        "prestige" to Movie(
+            title = "The Prestige",
+            director = "Christopher Nolan",
+            year = 2006,
+            rating = 8.5
+        ),
+        "dunkirk" to Movie(
+            title = "Dunkirk",
+            director = "Christopher Nolan",
+            year = 2017,
+            rating = 7.8
+        )
+    )
+
     @Tool("Find all movies by a specific director")
     fun lookUpMovieByDirector(director: String): String {
         """
@@ -35,7 +75,14 @@ class MoviesTools {
                 A formatted string listing all movies by that director, or a message if none are found.            
         """.trimIndent()
 
-        return "Movies by $director are: ..."
+        val moviesByDirector = movieDatabase.values
+            .filter { it.director == director }
+
+        return if (moviesByDirector.isEmpty()) {
+            "No movies found by director $director"
+        } else
+            "Movies by $director: " + moviesByDirector.joinToString(",") { "${it.title}-${it.year}" }
+
     }
 }
 fun main() {
@@ -70,7 +117,8 @@ fun main() {
     println("---------------------")
     
     // 5. Interact with the agent
-    val userMessage = "Which movies are directed by Christofer Nolan?"//"Hello Gemini, can you explain what LangChain4j is in one sentence?"
+    val director = "Christofer Nolan" // Don Ramon
+    val userMessage = "What movies has $director directed?" //"Hello Gemini, can you explain what LangChain4j is in one sentence?"
     println("User: $userMessage")
     
     try {
