@@ -30,6 +30,7 @@ It provides basic examples of how to set up conversational AI assistants with me
 1. Ensure Ollama is installed and running.
 2. Open your terminal and pull a model (e.g., `ollama run llama3.2`).
 3. Run `src/main/kotlin/OllamaExample.kt`.
+4. Or by using the docker-compose file
 
 ## Dependencies
 
