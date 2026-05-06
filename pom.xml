@@ -62,7 +62,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>org.example.GeminiExampleKt</mainClass>
+                    <mainClass>org.example.OllamaExampleKt</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -79,6 +79,12 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-google-ai-gemini</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+        <!-- LangChain4j Ollama integration (for local models) -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-ollama</artifactId>
             <version>${langchain4j.version}</version>
         </dependency>
         <!-- SLF4J for logging (required by Langchain4j) -->

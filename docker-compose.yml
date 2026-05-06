@@ -1,0 +1,38 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: local-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      # Using 'ollama list' is a native and reliable way to check if the server is up.
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # One-shot service that pulls the required models once Ollama is healthy
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: local-ollama-init
+    depends_on:
+      ollama:
+        condition: service_healthy
+    # This service connects to the 'ollama' service over the internal docker network
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: >
+      /bin/sh -c "
+        echo 'Ollama is healthy, pulling models...' &&
+        ollama pull llama3.2 &&
+        ollama pull nomic-embed-text &&
+        echo 'Models pulled successfully.'
+      "
+    restart: "no"
+
+volumes:
+  ollama_data:
